@@ -1,0 +1,126 @@
+---
+title: "FML-ASSIGN-4"
+author: "Misba Faisal"
+date: '`r Sys.Date()`'
+output:
+  html_document: default
+  word_document: default
+---
+
+```{R}
+library(factoextra)
+library(ggplot2) 
+library(ISLR) 
+library(NbClust) 
+library(cluster)
+library(tidyverse)
+```
+
+
+```{r}
+## Uploding data from CSV file(pharmaceutical.csv)
+Pharma <- read.csv ("C:/Users/Syed's/Downloads/Pharmaceuticals.csv")
+```
+
+## (A)Using only the numerical variables (1 to 9) to cluster the 21 firms and Justifying the various choices made in conducting the cluster analysis, such as weights for different variables, the specific clustering algorithm(s) used for the number of clusters formed, and so on.
+
+##Creating a new data frame 'R' by excluding data which is empty in 'Pharmaceuticals'
+
+
+```{r}
+R <- na.omit(Pharma) 
+summary(R)
+```
+# Adding new row name for the first column in the new dataset,creating a new dataset from coloumns 3 to 11 from 'A'and displaying the rows of the pharmacy data frame.
+```{r}
+row.names(R) <- R[,1]
+Pharmacy <- R[,3:11]
+head(Pharmacy)
+```
+# scaling data in the standard value form and displaying in standard form.
+```{r}
+Pharmacist <- scale (Pharmacy)
+head(Pharmacist)
+
+```
+# display(1)
+```{r}
+fviz_nbclust(Pharmacist, kmeans, method = "wss") + labs(subtitle = "Elbow Method")
+```
+
+# display(2)
+
+```{r}
+fviz_nbclust(Pharmacist, kmeans, method = "silhouette") + labs(subtitle = "silhouette Method")
+```
+
+# Clustering algorithm by using k-means with presenting 9 as the centre.
+
+```{r}
+set.seed(2731)
+k9 <- kmeans(Pharmacist, centers = 9, nstart = 81)
+fviz_cluster(k9, data = Pharmacist)
+```
+# calculating euclidean distance between matrix and pharmacist dataset.
+```{r}
+distance <- dist(Pharmacist, method = "euclidean") 
+fviz_dist(distance)
+```
+# CRAN mirror
+```{r}
+options(repos = c(CRAN = "https://cran.rstudio.com/"))
+fit <-kmeans(Pharmacist, 9) 
+aggregate(Pharmacist, by = list(fit$cluster), FUN=mean)
+```
+```{r}
+Pharmacist1 <- data.frame(Pharmacist, fit$cluster) 
+clusplot(Pharmacist, fit$cluster, color = TRUE, shade = FALSE, labels = 2, lines = 0)
+```
+## (B). Interpret the clusters with respect to the numerical variables used in forming the clusters.
+**The corporations that comprise Cluster 1 are ##JNJ, MRK, PFE, and GSK; these companies have the largest market capitalizations and depend on funding to operate efficiently. (less than 0.47 in leverage).
+
+**Due to their lower asset turnover and beta values, the stocks of Cluster 2 companies—AHM, WPI, and AVE—have the potential to perform better than the present market benchmark.
+
+**They are the least capitalized company on the market, with the fastest sales growth in Cluster 3, and can't even raise financing to keep running their business. (MRX, CHTT, LVX, ELAN). These company stocks' remarkable performance can be attributed in part to their high beta ratings.
+
+**Cluster 4: AGN, BAY, and RHA Because of their largest expense to earnings ratio, they have the lowest earnings. Additionally, the fact that these companies' Return on Equity is less than 1 makes it unlikely that investing in them will yield the biggest profits.
+
+**Cluster-5 The group is composed of ABT, SGP, NVS, AZN, BMY, and WYE. They have the lowest rate of sales development, the highest asset turnover, and the highest net profit margin. The growth of these businesses has contributed to their success.
+
+
+## (C). Is there a pattern in the clusters with respect to the numerical variables (10 to 12)? (those not used informing the clusters)
+
+**The equities in Cluster-1 are neither very strong, nor have they recently produced significant returns. Rather, their personality is average.
+
+**The companies in Cluster-2 are equally spread out around the world. Despite having a solid technological basis, the media has widely embraced these ideas.
+
+**Cluster 3: Despite having a high leverage ratio, they are only mildly advised due to the steadiness of their finances.
+
+**Cluster 4: The media claims that they should be preserved in case they turn out to be very valuable assets in the future.
+
+**Cluster No:5 are encouraged to stay for an extended period of time if they have a high net profit margin.
+
+## (D). Provide an appropriate name for each cluster using any or all of the variables in the dataset.
+
+**Cluster 1: Realistic strategy (as they are reputable stocks). A team of miners for gold.
+
+**Despite Cluster-2's low beta, the market is very optimistic about them.
+
+**The first configuration, or Cluster-3, was made up of stocks with solid fundamentals, both financially and otherwise.
+
+**Cluster 4: The starting lineup (stocks with solid fundamentals and financials).
+
+**Cluster 5 is the recurring cluster. Including the equities in the portfolio is highly recommended because a substantial net profit margin indicates that the business is making a profit.
+
+
+
+
+
+
+
+
+
+
+
+
+
